@@ -50,7 +50,15 @@
 				"source1 derive(repartidor_id = upper(trim(repartidor_id)),",
 				"          nombre_repartidor = initCap(lower(trim(nombre_repartidor))),",
 				"          tipo_vehiculo = initCap(lower(trim(tipo_vehiculo))),",
-				"          ciudad_base = initCap(lower(trim(ciudad_base))),",
+				"          ciudad_base = iif(\r",
+				"    upper(trim(ciudad_base)) == 'CBA',\r",
+				"    'Cochabamba',\r",
+				"    iif(\r",
+				"        upper(trim(ciudad_base)) == 'SANTA CRUZ DE LA SIERRA',\r",
+				"        'Santa Cruz de la Sierra',\r",
+				"        initCap(lower(trim(ciudad_base)))\r",
+				"    )\r",
+				"),",
 				"          activo = lower(trim(activo))) ~> derivedColumn1",
 				"derivedColumn1 split(!isNull(repartidor_id) && repartidor_id != '' && !isNull(nombre_repartidor) && nombre_repartidor != '' && !isNull(tipo_vehiculo) && tipo_vehiculo != '' && !isNull(ciudad_base) && ciudad_base != '' && !isNull(fecha_alta) && !isNull(activo) && activo != '',",
 				"     disjoint: false) ~> split1@(validos, rechazados)",
@@ -84,7 +92,15 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          repartidor_id,",
+				"          nombre_repartidor,",
+				"          tipo_vehiculo,",
+				"          ciudad_base,",
+				"          fecha_alta,",
+				"          activo",
+				"     )) ~> sink1"
 			]
 		}
 	}

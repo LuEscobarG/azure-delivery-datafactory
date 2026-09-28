@@ -53,7 +53,7 @@
 				"source1 derive(promocion_id = upper(trim(promocion_id)),",
 				"          nombre_promocion = initCap(lower(trim(nombre_promocion))),",
 				"          canal_aplicable = initCap(lower(trim(canal_aplicable))),",
-				"          porcentaje_descuento = replace(trim(porcentaje_descuento), ',', '.')) ~> derivedColumn1",
+				"          porcentaje_descuento = replace(     replace(trim(porcentaje_descuento), '%', ''),     ',',     '.' )) ~> derivedColumn1",
 				"derivedColumn1 split(!isNull(promocion_id) && promocion_id != '' && !isNull(nombre_promocion) && nombre_promocion != '' && !isNull(fecha_inicio) && !isNull(fecha_fin) && !isNull(porcentaje_descuento) && !isNull(canal_aplicable) && canal_aplicable != '',",
 				"     disjoint: false) ~> split1@(validos, rechazados)",
 				"split1@validos aggregate(groupBy(promocion_id),",
@@ -84,7 +84,15 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          promocion_id,",
+				"          nombre_promocion,",
+				"          fecha_inicio,",
+				"          fecha_fin,",
+				"          porcentaje_descuento,",
+				"          canal_aplicable",
+				"     )) ~> sink1"
 			]
 		}
 	}
