@@ -74,7 +74,7 @@
 				"          disponible = first(disponible)) ~> aggregate1",
 				"aggregate1 derive(precio_lista = toDecimal(precio_lista, 12, 2),",
 				"          disponible = iif(     lower(trim(disponible)) == 'sí',     true(),     false() ),",
-				"          costo_estimado = toDecimal(costo_texto, 12, 2)) ~> derivedColumn2",
+				"          costo_estimado = toDecimal(costo_estimado, 12, 2)) ~> derivedColumn2",
 				"derivedColumn2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
